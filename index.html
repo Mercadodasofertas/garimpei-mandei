@@ -20,10 +20,11 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
 button{font:inherit;color:inherit}
 a{color:inherit}
-.wrap{max-width:1200px;margin:0 auto;padding-inline:16px}
+.wrap{width:100%;max-width:none;margin:0;padding-inline:clamp(14px,2.5vw,40px)}
 :focus-visible{outline:3px solid var(--orange);outline-offset:3px}
 
 /* topo */
@@ -86,7 +87,11 @@ a{color:inherit}
 .rail-h{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:26px 0 12px}
 .rail-h h2{font:800 clamp(22px,2.8vw,30px)/1.1 var(--f-display);margin:0}
 .rail-h p{margin:0;color:var(--k-ink-2);font-weight:700;font-size:14.5px}
-.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(185px,215px);gap:16px;overflow-x:auto;padding:4px 6px 16px 4px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(185px,215px);align-items:stretch;gap:16px;overflow-x:auto;padding:4px 6px 16px 4px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+@media (min-width:821px){.rail{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-columns:auto;overflow:visible;scroll-snap-type:none}.rail-h p{display:none}.rail>.card:nth-child(n+13){display:none}}
+@media (min-width:1100px){.rail{grid-template-columns:repeat(5,minmax(0,1fr))}.rail>.card:nth-child(n+11){display:none}}
+@media (min-width:1400px){.rail{grid-template-columns:repeat(7,minmax(0,1fr))}.rail>.card:nth-child(n+11){display:flex}.rail>.card:nth-child(n+15){display:none}}
 /* cartões dentro da seção infantil: estilo adesivo */
 .kidzone .card{scroll-snap-align:start;background:#fff;color:var(--k-ink);border:2.5px solid var(--k-ink);border-radius:22px;box-shadow:var(--hard)}
 .kidzone .card:hover{transform:translate(-2px,-3px);box-shadow:6px 7px 0 var(--k-ink)}
@@ -108,10 +113,10 @@ a{color:inherit}
 .bar select{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);padding:7px 12px;font:800 14.5px var(--f-body)}
 .count-line{color:var(--muted);font-size:14.5px;font-weight:700;margin:18px 0 12px;scroll-margin-top:90px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:16px;padding-bottom:36px}
-.card{position:relative;background:var(--surface);border:0;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,.6);overflow:hidden;display:flex;flex-direction:column;cursor:pointer;text-align:left;padding:0;transition:transform .12s,box-shadow .12s;color:var(--ink)}
+.card{position:relative;height:100%;background:var(--surface);border:0;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,.6);overflow:hidden;display:flex;flex-direction:column;cursor:pointer;text-align:left;padding:0;transition:transform .12s,box-shadow .12s;color:var(--ink)}
 .card:hover{transform:translateY(-2px)}
-.ph{position:relative;aspect-ratio:1;background:#fff}
-.ph img{width:100%;height:100%;object-fit:contain;display:block;padding:8px}
+.ph{position:relative;aspect-ratio:1/1;width:100%;flex:0 0 auto;overflow:hidden;background:#fff}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;padding:8px}
 .badge{position:absolute;top:10px;left:10px;font:800 12px/1 var(--f-body);padding:6px 9px;border-radius:9px;background:var(--orange);color:#000}
 .badge.k{background:#47b8f5;color:#000}
 .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
@@ -250,7 +255,7 @@ P.forEach((p,i)=>{ p.i=i; p.kids=p.cat==='Infantil'; p.rank=Math.log10(Math.max(
   const now=new Date(); const y=now.getFullYear();
   const day=new Date(y,9,12); const today=new Date(y,now.getMonth(),now.getDate());
   const diff=Math.round((day-today)/86400000);
-  if(diff>1) el.innerHTML=`<b>${diff}</b><span>dias para o Dia das Crianças<small>domingo, 12 de outubro</small></span>`;
+  if(diff>1) el.innerHTML=`<b>${diff}</b><span>dias para o Dia das Crianças<small>${day.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</small></span>`;
   else if(diff===1) el.innerHTML=`<b>1</b><span>dia para o Dia das Crianças<small>é amanhã! confira o prazo de entrega</small></span>`;
   else if(diff===0) el.innerHTML=`<b>Hoje!</b><span>é Dia das Crianças<small>ainda dá tempo de garantir o presente</small></span>`;
   else el.innerHTML=`<b>+${P.filter(p=>p.kids).length}</b><span>presentes que eles vão amar<small>para qualquer dia do ano</small></span>`;
